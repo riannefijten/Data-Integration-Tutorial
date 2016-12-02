@@ -1,0 +1,1 @@
+java -Xmx2g -Dbigdata.propertyFile=blazegraph.properties -jar blazegraph.jar
