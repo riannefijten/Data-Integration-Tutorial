@@ -17,12 +17,16 @@
 		?patient roo:100018 ?genderRes.
 		?genderRes rdf:type ?gender.
 		
-		?patient roo:100016 ?ageResDiagnosis.
-		?ageResDiagnosis rdf:type roo:100002.
-		?ageResDiagnosis roo:100027 ?ageDiagnosisUnitRes.
-		?ageDiagnosisUnitRes rdf:type uo:0000036.
-		?ageResDiagnosis roo:100042 ?ageDiagnosis.
+		# Get age at diagnosis
+		{
+			?patient roo:100016 ?ageResDiagnosis.
+			?ageResDiagnosis rdf:type roo:100002.
+			?ageResDiagnosis roo:100027 ?ageDiagnosisUnitRes.
+			?ageDiagnosisUnitRes rdf:type uo:0000036.
+			?ageResDiagnosis roo:100042 ?ageDiagnosis.
+		}
 		
+		# Get ECOG performance status
 		{
 			?patient roo:100218 ?ecogRes.
 			?ecogRes rdf:type ?ecogStatus.
@@ -48,6 +52,7 @@
 			?pathNRes rdf:type ?pathN.
 		}
 		
+		# Get prescribed radiation dose (in Gray)
 		{
 			?rtRes roo:100023 ?prescribedDoseRes.
 			?prescribedDoseRes rdf:type roo:100013.
