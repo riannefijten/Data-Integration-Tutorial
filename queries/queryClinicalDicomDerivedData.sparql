@@ -97,7 +97,6 @@ WHERE {
 		
 		#get the actual derived volume 
 		?derivedVolumeRes roo:100042 ?derivedVolume.
-		
 	}
 }
 ORDER BY ?patient ?dicom_rtstruct
