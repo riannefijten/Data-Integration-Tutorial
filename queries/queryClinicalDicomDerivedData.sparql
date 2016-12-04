@@ -8,59 +8,61 @@ prefix seq: <http://semantic-dicom.org/seq#>
 
 SELECT ?patient ?gender ?ageDiagnosis ?clinT ?clinN ?ecogStatus ?presDoseGy ?dicom_rtstruct ?derivedVolume ?derivedVolumeVersion ?derivedVolumeDate ?pathT ?pathN
 WHERE {
-	?patient rdf:type ncit:C16960.
-	?patient roo:100008 ?disease.
-	?disease rdf:type icd:C20.
-	
-	?patient roo:100301 ?rtRes.
-	?rtRes rdf:type ncit:C15313.
-	?rtRes roo:100402 ?disease.
-	
-	?patient roo:100018 ?genderRes.
-	?genderRes rdf:type ?gender.
-	
-	# Get age at diagnosis
-	{
-		?patient roo:100016 ?ageResDiagnosis.
-		?ageResDiagnosis rdf:type roo:100002.
-		?ageResDiagnosis roo:100027 ?ageDiagnosisUnitRes.
-		?ageDiagnosisUnitRes rdf:type uo:0000036.
-		?ageResDiagnosis roo:100042 ?ageDiagnosis.
-	}
-	
-	# Get ECOG performance status
-	{
-		?patient roo:100218 ?ecogRes.
-		?ecogRes rdf:type ?ecogStatus.
-	}
-	
-	# Get clinical TNM values
-	{
-		?disease roo:100243 ?clinTnmRes.
-		?clinTnmRes rdf:type ncit:C48881.
-		?clinTnmRes roo:100244 ?clinTRes.
-		?clinTRes rdf:type ?clinT.
-		?clinTnmRes roo:100242 ?clinNRes.
-		?clinNRes rdf:type ?clinN.
-	}
-	
-	# Get pathologic TNM values
-	{
-		?disease roo:100287 ?pathTnmRes.
-		?pathTnmRes rdf:type ncit:C48739.
-		?pathTnmRes roo:100288 ?pathTRes.
-		?pathTRes rdf:type ?pathT.
-		?pathTnmRes roo:100286 ?pathNRes.
-		?pathNRes rdf:type ?pathN.
-	}
-	
-	# Get prescribed radiation dose (in Gray)
-	{
-		?rtRes roo:100023 ?prescribedDoseRes.
-		?prescribedDoseRes rdf:type roo:100013.
-		?prescribedDoseRes roo:100027 ?presDoseUnitRes.
-		?presDoseUnitRes rdf:type uo:000134.
-		?prescribedDoseRes roo:100042 ?presDoseGy.
+	SERVICE <http://localhost:9999/blazegraph/namespace/kb/sparql> {
+		?patient rdf:type ncit:C16960.
+		?patient roo:100008 ?disease.
+		?disease rdf:type icd:C20.
+		
+		?patient roo:100301 ?rtRes.
+		?rtRes rdf:type ncit:C15313.
+		?rtRes roo:100402 ?disease.
+		
+		?patient roo:100018 ?genderRes.
+		?genderRes rdf:type ?gender.
+		
+		# Get age at diagnosis
+		{
+			?patient roo:100016 ?ageResDiagnosis.
+			?ageResDiagnosis rdf:type roo:100002.
+			?ageResDiagnosis roo:100027 ?ageDiagnosisUnitRes.
+			?ageDiagnosisUnitRes rdf:type uo:0000036.
+			?ageResDiagnosis roo:100042 ?ageDiagnosis.
+		}
+		
+		# Get ECOG performance status
+		{
+			?patient roo:100218 ?ecogRes.
+			?ecogRes rdf:type ?ecogStatus.
+		}
+		
+		# Get clinical TNM values
+		{
+			?disease roo:100243 ?clinTnmRes.
+			?clinTnmRes rdf:type ncit:C48881.
+			?clinTnmRes roo:100244 ?clinTRes.
+			?clinTRes rdf:type ?clinT.
+			?clinTnmRes roo:100242 ?clinNRes.
+			?clinNRes rdf:type ?clinN.
+		}
+		
+		# Get pathologic TNM values
+		{
+			?disease roo:100287 ?pathTnmRes.
+			?pathTnmRes rdf:type ncit:C48739.
+			?pathTnmRes roo:100288 ?pathTRes.
+			?pathTRes rdf:type ?pathT.
+			?pathTnmRes roo:100286 ?pathNRes.
+			?pathNRes rdf:type ?pathN.
+		}
+		
+		# Get prescribed radiation dose (in Gray)
+		{
+			?rtRes roo:100023 ?prescribedDoseRes.
+			?prescribedDoseRes rdf:type roo:100013.
+			?prescribedDoseRes roo:100027 ?presDoseUnitRes.
+			?presDoseUnitRes rdf:type uo:000134.
+			?prescribedDoseRes roo:100042 ?presDoseGy.
+		}
 	}
 	
 	SERVICE <http://localhost:9999/blazegraph/namespace/dicom/sparql> {
