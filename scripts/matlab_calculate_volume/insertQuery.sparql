@@ -1,6 +1,6 @@
 PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX ncit:<http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#>
-PREFIX roo:<http://www.cancerdata.org/roo#>
+PREFIX roo:<http://www.cancerdata.org/roo/>
 PREFIX sedi:<http://semantic-dicom.org/dcm#>
 PREFIX jvs:<http://jvsoest.eu/rdf/>
 PREFIX thunder:<http://jvsoest.eu/rdf/thunder/>
@@ -9,7 +9,8 @@ PREFIX UO:<http://purl.obolibrary.org/obo/UO_>
 INSERT {
     thunder:##STRUCTUID##_##LABEL##_vol rdf:type ncit:C94515.
     thunder:##STRUCTUID##_##LABEL##_vol roo:100042 "##VOLUME##"^^xsd:decimal.
-    thunder:##STRUCTUID##_##LABEL##_vol roo:100027 UO:0000097.
+    thunder:##STRUCTUID##_##LABEL##_vol roo:100027 thunder:##STRUCTUID##_##LABEL##_units.
+    thunder:##STRUCTUID##_##LABEL##_units rdf:type UO:0000097.
     thunder:##STRUCTUID##_##LABEL##_vol roo:100267 jvs:matlab_volcalc_##VERSION##.
     thunder:##STRUCTUID##_##LABEL##_vol roo:100041 "##DATETIME##"^^xsd:datetime.
 
