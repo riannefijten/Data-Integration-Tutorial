@@ -5,9 +5,6 @@ DROP TABLE public.thunderset;
 CREATE TABLE public.thunderset
 (
   id character varying NOT NULL,
-  dd character varying,
-  mm character varying,
-  yyyy character varying,
   institute numeric,
   gender numeric,
   ct numeric,
