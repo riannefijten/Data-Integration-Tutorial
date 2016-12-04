@@ -22,7 +22,6 @@ CREATE TABLE public.thunderset
   surgery_type character varying,
   pt character varying,
   pn character varying,
-  wait_and_see character varying,
   age character varying,
   trg character varying,
   surgery_date character varying,
