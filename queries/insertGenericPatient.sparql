@@ -1,0 +1,14 @@
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix sedi: <http://semantic-dicom.org/dcm#>
+
+INSERT {
+  GRAPH <http://jvsoest.eu/createdTemp> {
+    ?ptGeneral ?pred ?obj.
+  }
+} WHERE {
+  ?p rdf:type sedi:Patient.
+  ?p sedi:ATT00100020 ?ptid.
+  ?p ?pred ?obj.
+  
+  BIND(IRI(CONCAT("http://SP4-JOHAN.ad.maastro.nl/rdf/patient_", ?ptid)) AS ?ptGeneral).
+}
