@@ -1,0 +1,100 @@
+prefix roo: <http://www.cancerdata.org/roo/>
+prefix ncit: <http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix icd: <http://purl.bioontology.org/ontology/ICD10/>
+prefix uo: <http://purl.obolibrary.org/obo/UO_>
+prefix sedi: <http://semantic-dicom.org/dcm#>
+prefix seq: <http://semantic-dicom.org/seq#>
+
+SELECT ?patient ?gender ?ageDiagnosis ?clinT ?clinN ?ecogStatus ?presDoseGy ?dicom_rtstruct ?dicom_structName (GROUP_CONCAT(?dicom_contourPoints; separator="\\") AS ?points) ?pathT ?pathN
+WHERE {
+	?patient rdf:type ncit:C16960.
+	?patient roo:100008 ?disease.
+	?disease rdf:type icd:C20.
+	
+	?patient roo:100301 ?rtRes.
+	?rtRes rdf:type ncit:C15313.
+	?rtRes roo:100402 ?disease.
+	
+	?patient roo:100018 ?genderRes.
+	?genderRes rdf:type ?gender.
+	
+	# Get age at diagnosis
+	{
+		?patient roo:100016 ?ageResDiagnosis.
+		?ageResDiagnosis rdf:type roo:100002.
+		?ageResDiagnosis roo:100027 ?ageDiagnosisUnitRes.
+		?ageDiagnosisUnitRes rdf:type uo:0000036.
+		?ageResDiagnosis roo:100042 ?ageDiagnosis.
+	}
+	
+	# Get ECOG performance status
+	{
+		?patient roo:100218 ?ecogRes.
+		?ecogRes rdf:type ?ecogStatus.
+	}
+	
+	# Get clinical TNM values
+	{
+		?disease roo:100243 ?clinTnmRes.
+		?clinTnmRes rdf:type ncit:C48881.
+		?clinTnmRes roo:100244 ?clinTRes.
+		?clinTRes rdf:type ?clinT.
+		?clinTnmRes roo:100242 ?clinNRes.
+		?clinNRes rdf:type ?clinN.
+	}
+	
+	# Get pathologic TNM values
+	{
+		?disease roo:100287 ?pathTnmRes.
+		?pathTnmRes rdf:type ncit:C48739.
+		?pathTnmRes roo:100288 ?pathTRes.
+		?pathTRes rdf:type ?pathT.
+		?pathTnmRes roo:100286 ?pathNRes.
+		?pathNRes rdf:type ?pathN.
+	}
+	
+	# Get prescribed radiation dose (in Gray)
+	{
+		?rtRes roo:100023 ?prescribedDoseRes.
+		?prescribedDoseRes rdf:type roo:100013.
+		?prescribedDoseRes roo:100027 ?presDoseUnitRes.
+		?presDoseUnitRes rdf:type uo:000134.
+		?prescribedDoseRes roo:100042 ?presDoseGy.
+	}
+	
+	SERVICE <http://localhost:9999/blazegraph/namespace/dicom/sparql> {
+		# get all DICOM studies for this patient
+		?patient sedi:hasStudy ?dicom_study.
+		
+		# get all DICOM series (scans) for this patient
+		?dicom_study sedi:containsSeries ?dicom_series.
+		
+		#get the modality per DICOM serie
+		?dicom_series sedi:ATT00080060 ?modality.
+		
+		#filter on the contour objects
+		FILTER (?modality = "RTSTRUCT").
+		
+		# get into the structureSet sequence, and get all structure names and numbers
+		?dicom_series sedi:containsStructureSet ?dicom_rtstruct.
+		?dicom_rtstruct sedi:ATT30060020 ?dicom_structureSet.
+		?dicom_structureSet seq:hasItem ?dicom_structureSet_item.
+		?dicom_structureSet_item sedi:ATT30060022 ?dicom_structNumber.
+		?dicom_structureSet_item sedi:ATT30060026 ?dicom_structName.
+		  
+		# Get into the contourSet sequence, and get all structure numbers
+		?dicom_rtstruct sedi:ATT30060039 ?dicom_contourSet.
+		?dicom_contourSet seq:hasItem ?dicom_contourSet_item.
+		?dicom_contourSet_item sedi:ATT30060084 ?dicom_structNumberRef.
+		FILTER (?dicom_structNumber=?dicom_structNumberRef).
+		
+		# get all contour points per structure
+		?dicom_contourSet_item sedi:ATT30060040 ?dicom_contourImage.
+		?dicom_contourImage seq:hasItem ?dicom_contourImageItem.
+		?dicom_contourImageItem sedi:hasOrdinal ?dicom_contourImageItemOrder.
+		?dicom_contourImageItem sedi:ATT30060050 ?dicom_contourPoints.
+	}
+}
+GROUP BY ?patient ?gender ?ageDiagnosis ?clinT ?clinN ?ecogStatus ?presDoseGy ?dicom_rtstruct ?dicom_structName ?pathT ?pathN
+ORDER BY ?patient ?dicom_rtstruuct ?dicom_structName xsd:integer(?dicom_contourImageItemOrder)
