@@ -1,7 +1,3 @@
--- Table: public.thunderset
-
-DROP TABLE public.thunderset;
-
 CREATE TABLE public.thunderset
 (
   id character varying NOT NULL,
